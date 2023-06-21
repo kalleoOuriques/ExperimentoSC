@@ -2,7 +2,7 @@ import datetime
 import os
 from CD import certificadoDigital
 from User import usuario
-
+from Crypto.PublicKey import RSA
 
 
 class autoridadeCentral:
@@ -39,29 +39,32 @@ class autoridadeCentral:
         # Caso o caminho não exista, ou seja, é a primeira vez
         # que ele cria um certificado. Então, ele cria a pasta
         if not(os.path.exists(caminhoDoCertificado)):
-            os.mkdir(caminhoDoCertificado)
+            os.makedirs(caminhoDoCertificado)
 
         fileCertificado = os.path.join(caminhoDoCertificado, f'{certificado.cpf_cnpj}_{certificado.numeroDeSerie}.txt')
         fileCPrivada = os.path.join(caminhoDoCertificado, f'{certificado.numeroDeSerie}_PK.txt')
 
         arquivo = open(fileCertificado, "w")
+        with open(fileCertificado, "w") as arquivo:
 
-        arquivo.write(f'Nome do titular: {certificado.nome}\n')
-        arquivo.write(f'Email: {certificado.email}\n')
-        arquivo.write(f'CPF ou CNPJ: {certificado.cpf_cnpj}\n')
-        arquivo.write(f'Valido até: {certificado.validade}\n')
-        arquivo.write(f'Chave pública: {certificado.chavePublica}\n')
-        arquivo.write(f'Número de Série: {certificado.numeroDeSerie}\n')
-        arquivo.write(f'Assinatura AC: {certificado.assinaturaAC}\n')
-        
-        arquivo.close()
+            arquivo.write(f'Nome do titular: {certificado.nome}\n')
+            arquivo.write(f'Email: {certificado.email}\n')
+            arquivo.write(f'CPF ou CNPJ: {certificado.cpf_cnpj}\n')
+            arquivo.write(f'Valido até: {certificado.validade}\n')
+            arquivo.write(f'Chave pública: {certificado.chavePublica}\n')
+            arquivo.write(f'Número de Série: {certificado.numeroDeSerie}\n')
+            arquivo.write(f'Assinatura AC: {certificado.assinaturaAC}\n')
 
-        arquivo = open(fileCPrivada, "w")
+        with open(fileCPrivada, "w") as arquivo:
 
-        arquivo.write(f'{chavePrivada}\n')
-        
-        arquivo.close()
+            arquivo.write(f'{chavePrivada}\n')
 
 
     def RSA(self):
-        return "cPU", "CPri"
+        """
+        usa o módulo RSA da lib pycryptodome para gerar um par de chave
+        """
+        #password = "senha"
+        chave = RSA.generate(1024)
+
+        return (chave.public_key().export_key(), chave.export_key())
