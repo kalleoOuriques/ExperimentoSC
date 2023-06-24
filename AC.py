@@ -42,7 +42,7 @@ class autoridadeCentral:
             os.makedirs(caminhoDoCertificado)
 
         fileCertificado = os.path.join(caminhoDoCertificado, f'{certificado.cpf_cnpj}_{certificado.numeroDeSerie}.txt')
-        fileCPrivada = os.path.join(caminhoDoCertificado, f'{certificado.numeroDeSerie}_PK.txt')
+        fileCPrivada = os.path.join(caminhoDoCertificado, f'{certificado.numeroDeSerie}_PK.pem')
 
         arquivo = open(fileCertificado, "w")
         with open(fileCertificado, "w") as arquivo:
@@ -55,9 +55,8 @@ class autoridadeCentral:
             arquivo.write(f'Número de Série: {certificado.numeroDeSerie}\n')
             arquivo.write(f'Assinatura AC: {certificado.assinaturaAC}\n')
 
-        with open(fileCPrivada, "w") as arquivo:
-
-            arquivo.write(f'{chavePrivada}\n')
+        with open(fileCPrivada, "wb") as arquivo:
+            arquivo.write(chavePrivada)
 
 
     def RSA(self):
@@ -67,4 +66,4 @@ class autoridadeCentral:
         #password = "senha"
         chave = RSA.generate(1024)
 
-        return (chave.public_key().export_key(), chave.export_key())
+        return (chave.public_key().export_key(), chave.export_key('PEM'))

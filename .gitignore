@@ -5,3 +5,7 @@ HD/
 .venv
 env
 venv
+bin/
+lib/
+pyvenv.cfg
+lib64/
