@@ -20,12 +20,18 @@ class Sistema:
         return caminho_pastaUser
         # verificar se 
 
-    def verificarAssinatura(self, user):
+    def verificarAssinatura(self, userAssinador):
 
         # Verificar por indicação do usuário qual o documento que deve ser assinado
+        # Receber a pasta compactada
+        # Descriptografar o hash do documento com a chave pública do usuário
+
+        # Transformar o documento txt em hash
+        # comparar os dois hash
         pass
 
     def gerarCertificado(self, user):
+        # chama a ac passando o user como parâmetro 
         pass
 
     def assinarDocumento(self, user, certificado, documento):
