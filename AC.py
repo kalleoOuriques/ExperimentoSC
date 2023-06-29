@@ -18,6 +18,8 @@ class autoridadeCentral:
 
         # geração das chaves RSA
         chavePublica, chavePrivada = self.RSA()
+        user.chave_publica = chavePublica
+        user.priv = chavePrivada
 
         # controle do numero de serie do certificado
         self.serieControle += 1
@@ -66,4 +68,4 @@ class autoridadeCentral:
         #password = "senha"
         chave = RSA.generate(1024)
 
-        return (chave.public_key().export_key(), chave.export_key('PEM'))
+        return (chave.public_key().export_key(), chave.export_key())

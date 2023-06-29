@@ -5,12 +5,17 @@ import shutil
 import zipfile
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_OAEP
+from Crypto.Signature import pkcs1_15
+from Crypto.Hash import SHA256
 import base64
+from AC import autoridadeCentral
+
 
 class Sistema:
 
     def __init__(self, nome):
         self.nome = nome
+        self.autoridade = autoridadeCentral()
 
 
     def acessarHD(self, user):
@@ -20,7 +25,7 @@ class Sistema:
         return caminho_pastaUser
         # verificar se 
 
-    def verificarAssinatura(self, userAssinador):
+    def verificarAssinatura(self, user_assinador, arquivo):
 
         # Verificar por indicação do usuário qual o documento que deve ser assinado
         # Receber a pasta compactada
@@ -28,10 +33,42 @@ class Sistema:
 
         # Transformar o documento txt em hash
         # comparar os dois hash
-        pass
+
+        caminho_user: str = self.acessarHD(user_assinador)
+        caminho_arquivo = os.path.join(caminho_user, arquivo)  # caminho do zip
+
+        with zipfile.ZipFile(caminho_arquivo) as arquivo_zipado:
+            arquivo_zipado.extractall(f"{caminho_user}/doc123Assinado/")
+
+        with open(f"{caminho_user}/doc123Assinado/doc123.txt") as doc:
+            doc = doc.read()
+            hash_a_verificar = hashlib.sha256(doc.encode('utf-8')).hexdigest()
+            #hash_a_verificar = SHA256.new(doc)
+            print("hash do doc: ", hash_a_verificar)
+
+        with open(f"{caminho_user}/doc123Assinado/EncryptHash.txt", 'r') as signature:
+            hash_criptografado = signature.read()
+            decoded_hash = base64.b64decode(hash_criptografado)
+            #decoded_hash = decoded_hash.decode('utf-8')
+
+            #print("tamanho hash abrir: ", len(decoded_hash))
+            #print("hash decoded: ", decoded_hash)
+            
+
+            chave = RSA.import_key(user_assinador.priv) # chave publica no objeto da lib (RsaKey)
+
+            cipher = PKCS1_OAEP.new(chave)
+            #cipher = pkcs1_15.new(chave)
+            string = cipher.decrypt(decoded_hash).decode('utf-8')
+            print("string: ", string)
+            if string == hash_a_verificar:
+                print("VERIFICAÇÃO COM SUCESSO")
+
+    
 
     def gerarCertificado(self, user):
         # chama a ac passando o user como parâmetro 
+        self.autoridade.gerarCertificado(user)
         pass
 
     def assinarDocumento(self, user, certificado, documento):
@@ -69,6 +106,8 @@ class Sistema:
             return {'status': False, 'descricao': 'Este certificado já expirou!' }
             
         # transformar esta string em um hash
+
+        self.gerarCertificado(user)
     
         caminhoDocumento = os.path.join(self.acessarHD(user), documento)
         arquivo = open(caminhoDocumento, 'r')
@@ -89,13 +128,19 @@ class Sistema:
 
         # Criar instância do objeto PKCS1_OAEP
         cipher = PKCS1_OAEP.new(chave_privada)
+        #cipher = pkcs1_15.new(chave_privada)
 
         # Converter o hash para bytes
-    
         hash_bytes = hash.encode('utf-8')
+        #hash_bytes = SHA256.new(hash_bytes)
+        #print("hash de assinar taman", len(hash_bytes))
 
         # Criptografar o hash
         hash_criptografado = cipher.encrypt(hash_bytes)
+        #hash_criptografado = cipher.sign(hash_bytes)
+        print("taman hash cripto", len(hash_criptografado))
+        print(hash_criptografado)
+        print("\n")
         
         # criar uma pasta com o hash criptografado +
         # o documento original
