@@ -1,5 +1,5 @@
 import os
-class usuario:
+class user:
     def __init__(self, nome, email, cpf_cnpj):
         self.nome = nome
         self.email = email

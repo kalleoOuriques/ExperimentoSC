@@ -1,7 +1,7 @@
 import datetime
 import os
 from CD import certificadoDigital
-from User import usuario
+from User import user
 from Crypto.PublicKey import RSA
 
 
@@ -11,7 +11,7 @@ class autoridadeCentral:
         self.assinatura = 'assinatura'
         self.serieControle = 0
 
-    def gerarCertificado(self, user : usuario):
+    def gerarCertificado(self, user : user):
         # validade de 1 ano
         dataAtual = datetime.datetime.now()
         validade = dataAtual + datetime.timedelta(days=365)

@@ -1,6 +1,6 @@
+from Sistema import Sistema
+from User import user
 import os
-from User import usuario
-from AC import autoridadeCentral
 
 def deletar_arquivos_diretorio(caminho_diretorio):
     # Verificar se o caminho do diretório é válido
@@ -24,11 +24,27 @@ caminho_pasta = os.path.join(diretorio_atual, 'HD')
 caminho_pastaKalleo = os.path.join(caminho_pasta, 'Kalleo')
 deletar_arquivos_diretorio(caminho_pastaKalleo)
 
-ac = autoridadeCentral()
-usuario1 = usuario("Kalleo", "kalleo@gmail.com", "12345678900")
+# criação do sistema que será utilizado pelo usuário
+sistema = Sistema("01")
 
-print(usuario1.certificado())
+# criação do usuário do sistema
+userKalleo = user("Kalleo", "kalleo@gmail.com", "12345678900")
 
-ac.gerarCertificado(usuario1)
+# geração de certificado por meio do sistema
+sistema.gerarCertificado(userKalleo)
 
-print(usuario1.certificado())
+# geração do documento exemplo que será assinado
+documento = open(os.path.join(caminho_pastaKalleo, 'doc123.txt'), "w")
+documento.write("escrevendo no documento que vai ser assinado...")
+documento.close()
+
+# assinatura do documento
+# parâmetros respectivamente: usuário que irá assinar seu documento,
+# certificado que deseja utilizar, documento que será assinado
+sistema.assinarDocumento(userKalleo, "12345678900_1.txt", "doc123.txt")
+
+# verificação da validade da assinatura
+# parâmetros respectivamente: usuário que teoricamente assinou o documento,
+# documento assinado.
+
+#sistema.verificarAssinatura(userKalleo, "doc123Assinado.zip")
