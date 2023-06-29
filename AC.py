@@ -19,7 +19,6 @@ class autoridadeCentral:
         # geração das chaves RSA
         chavePublica, chavePrivada = self.RSA()
         user.chave_publica = chavePublica
-        user.priv = chavePrivada
 
         # controle do numero de serie do certificado
         self.serieControle += 1

@@ -5,7 +5,6 @@ class usuario:
         self.email = email
         self.cpf_cnpj = cpf_cnpj
         self.chave_publica = None
-        self.priv = None
 
     # Primeiro verifica a existencia de um certificado do usuario
     # Tentanto acessar a pasta do usuario no "HD"
