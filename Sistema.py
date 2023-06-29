@@ -12,6 +12,7 @@ from AC import autoridadeCentral
 
 
 class Sistema:
+    """Sistema básico semelhante ao assina ufsc"""
 
     def __init__(self, nome):
         self.nome = nome
@@ -36,16 +37,17 @@ class Sistema:
 
         caminho_user: str = self.acessarHD(user_assinador)
         caminho_arquivo = os.path.join(caminho_user, arquivo)  # caminho do zip
+        pasta_extracao = f"{caminho_user}/{arquivo[:arquivo.find('.')]}"  # pasta nova para extração do zip
 
         with zipfile.ZipFile(caminho_arquivo) as arquivo_zipado:
-            arquivo_zipado.extractall(f"{caminho_user}/doc123Assinado/")
+            arquivo_zipado.extractall(pasta_extracao)
 
-        with open(f"{caminho_user}/doc123Assinado/doc123.txt") as doc:
+        with open(f"{pasta_extracao}/{arquivo[:arquivo.find('.')].replace('Assinado', '.txt')}") as doc:
             doc = doc.read()
             mensagem_hashed_em_bytes = doc.encode('utf-8')
             hash_do_documento = SHA256.new(mensagem_hashed_em_bytes)
 
-        with open(f"{caminho_user}/doc123Assinado/EncryptHash.txt", 'r') as signature:
+        with open(f"{pasta_extracao}/EncryptHash.txt", 'r') as signature:
             signature = signature.read()
             hash_encoded = signature.encode('utf-8') # codifica de str para bytes
             decoded_hash = base64.b64decode(hash_encoded) # decodifica o base64

@@ -6,6 +6,9 @@ from Crypto.PublicKey import RSA
 
 
 class autoridadeCentral:
+    """
+    Simula uma hierarquia de autoridades centrais
+    """
 
     def __init__(self):
         self.assinatura = 'assinatura'
